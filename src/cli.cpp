@@ -63,11 +63,15 @@ void CLI::HandleCommand(const std::string& command, const std::vector<std::strin
   {
     if(args.empty())
     {
-      std::cout << "film title not provided" << std::endl;
+      std::cout << "Error: film title not provided" << std::endl;
       return;
     }
 
-    std::set<int> film_ids = m_model.GrepFilms(args[0]);
+    std::string title;
+    for(const std::string& s : args)
+      title += std::string{" "} + s;
+
+    std::set<int> film_ids = m_model.GrepFilms(title);
     std::map<std::string, Film> films;
 
     std::map<std::string, int> title_to_id;
