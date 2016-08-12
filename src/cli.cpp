@@ -126,15 +126,6 @@ void CLI::PrintFilmPerformances(int film_id)
   for(auto id : performance_ids)
     performances.push_back(m_model.GetPerformance(id));
 
-  //Sort by time
-  std::sort(performances.begin(), performances.end(), by_time);
-
-  //Stable sort by cinema
-  std::stable_sort(performances.begin(), performances.end(), by_cinema);
-
-  //Stable sort by date
-  std::stable_sort(performances.begin(), performances.end(), by_date);
-
   PrintPerformances(performances);
 }
 
@@ -155,20 +146,24 @@ void CLI::PrintTodaysPerformances()
     performances.push_back(p);
   }
 
+  PrintPerformances(performances, false);
+}
+
+void CLI::PrintPerformances(std::vector<Performance> performances, bool show_dates)
+{
   //Sort by time
   std::sort(performances.begin(), performances.end(), by_time);
 
   //Stable sort by cinema
   std::stable_sort(performances.begin(), performances.end(), by_cinema);
 
+  //Stable sort by date
+  std::stable_sort(performances.begin(), performances.end(), by_date);
+
   //Stable sort by film
   std::stable_sort(performances.begin(), performances.end(), by_film);
 
-  PrintPerformances(performances, false);
-}
 
-void CLI::PrintPerformances(const std::vector<Performance>& performances, bool show_dates)
-{
   std::string last_film;
   std::string last_date;
   std::string last_cinema;
