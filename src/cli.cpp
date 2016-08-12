@@ -196,7 +196,7 @@ void CLI::PrintPerformances(std::vector<Performance> performances, bool show_dat
     }
 
     std::string info = std::string(p.is3D ? "3D" : "") + std::string(p.isIMAX ? " IMAX" : "");
-    std::cout << " [" << p.hour << ":" << p.minute << (info.empty() ? "" : " " + info) << "]";
+    std::cout << " [" << std::setw(2) << p.hour << ":" << std::setw(2) << p.minute << (info.empty() ? "" : " " + info) << "]";
     std::cout << std::flush;
   }
   std::cout << std::endl;
