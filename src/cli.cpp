@@ -1,5 +1,6 @@
 #include "cli.hpp"
 #include "odeon.hpp"
+#include "colors.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -183,7 +184,7 @@ void CLI::PrintPerformances(std::vector<Performance> performances, bool show_dat
     {
       last_film = cur_film;
       last_date = "";
-      std::cout << "\n\n" << film.title << ":";
+      std::cout << "\n\n" << Colors::Fg::White << film.title << ":" << Colors::Fg::Default;
     }
 
     if(cur_date != last_date)
@@ -191,7 +192,7 @@ void CLI::PrintPerformances(std::vector<Performance> performances, bool show_dat
       last_date = cur_date;
       last_cinema = "";
       if(show_dates)
-        std::cout << "\n" << cur_date << ":";
+        std::cout << "\n" << Colors::Fg::Yellow << cur_date << ":" << Colors::Fg::Default;
     }
     if(cur_cinema != last_cinema)
     {
@@ -199,9 +200,11 @@ void CLI::PrintPerformances(std::vector<Performance> performances, bool show_dat
       std::cout << "\n" << std::setw(30) << cur_cinema << ":";
     }
 
-    std::string info = std::string(p.is3D ? "3D" : "") + std::string(p.isIMAX ? " IMAX" : "");
-    std::cout << " [" << std::setw(2) << p.hour << ":" << std::setw(2) << p.minute << (info.empty() ? "" : " " + info) << "]";
-    std::cout << std::flush;
+    const std::string left = (p.is3D ? Colors::Fg::White : Colors::Fg::Blue) + (p.isIMAX ? " <" : " [");
+    const std::string right = (p.isIMAX ? ">" : "]") + Colors::Fg::Default;
+    std::cout << std::setfill('0');
+    std::cout << left << std::setw(2) << p.hour << ":" << std::setw(2) << p.minute << right << std::flush;
+    std::cout << std::setfill(' ');
   }
   std::cout << std::endl;
 }

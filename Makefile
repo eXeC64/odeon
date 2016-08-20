@@ -3,7 +3,7 @@
 CXXFLAGS = -W -Wall -std=c++14
 LDFLAGS = -lcpr -lcurl -ljsoncpp -ltermbox
 
-SRCS = main.cpp odeon.cpp ui.cpp cli.cpp
+SRCS = main.cpp odeon.cpp cli.cpp
 OBJS = $(addprefix build/, $(SRCS:.cpp=.o))
 
 TARGET = odeon
