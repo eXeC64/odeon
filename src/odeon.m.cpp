@@ -4,7 +4,7 @@
 #include "odeon.hpp"
 #include "cli.hpp"
 
-int main(int argc, char **argv)
+int main()
 {
   Odeon db;
 
