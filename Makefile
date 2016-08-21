@@ -1,5 +1,4 @@
-.PHONY: all clean
-
+CXX ?= g++
 STD = c++14
 LIBS = cpr curl jsoncpp
 
@@ -16,17 +15,27 @@ BLUE = \033[34m
 WHITE = \033[37m
 DEFAULT = \033[39m
 
+#V=1 to build verbosely
+ifeq ($(V),)
+MUTE := @
+endif
+
 all: $(BINS)
 
 bin/%: build/%.m.o $(OBJS)
 	@mkdir -p bin
 	@echo -e "[*] $(GREEN)Linking $(WHITE)$@$(DEFAULT)"
-	@$(CXX) -o $@ $^ $(LDFLAGS)
+	$(MUTE)$(CXX) -o $@ $^ $(LDFLAGS)
 
 build/%.o: src/%.cpp
 	@mkdir -p build
 	@echo -e "[*] $(BLUE)Compiling $(WHITE)$^$(DEFAULT)"
-	@$(CXX) $(CXXFLAGS) -o $@ -c $<
+	$(MUTE)$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 clean:
-	@$(RM) bin/* build/*
+	$(MUTE)$(RM) bin/* build/*
+
+.PHONY: all clean
+
+#Retain intermediate files
+.SECONDARY:
