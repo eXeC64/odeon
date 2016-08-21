@@ -1,21 +1,32 @@
-.PHONY: clean run
+.PHONY: all clean
 
-CXXFLAGS = -W -Wall -std=c++14
-LDFLAGS = -lcpr -lcurl -ljsoncpp -ltermbox
+STD = c++14
+LIBS = cpr curl jsoncpp
 
-SRCS = main.cpp odeon.cpp cli.cpp
-OBJS = $(addprefix build/, $(SRCS:.cpp=.o))
+CXXFLAGS = -W -Wall -std=$(STD) -Iinclude
+LDFLAGS = $(LIBS:%=-l%)
 
-TARGET = odeon
+BINS = $(patsubst src/%.m.cpp,bin/%,$(wildcard src/*.m.cpp))
+SRCS = $(filter-out %.m.cpp, $(wildcard src/*.cpp))
+OBJS = $(SRCS:src/%.cpp=build/%.o)
 
-$(TARGET): $(OBJS)
-	$(CXX) -o $@ $^ $(LDFLAGS) 
+RED = \033[31m
+GREEN = \033[32m
+BLUE = \033[34m
+WHITE = \033[37m
+DEFAULT = \033[39m
+
+all: $(BINS)
+
+bin/%: build/%.m.o $(OBJS)
+	@mkdir -p bin
+	@echo -e "[*] $(GREEN)Linking $(WHITE)$@$(DEFAULT)"
+	@$(CXX) -o $@ $^ $(LDFLAGS)
 
 build/%.o: src/%.cpp
-	$(CXX) $(CXXFLAGS) -o $@ -c $<
+	@mkdir -p build
+	@echo -e "[*] $(BLUE)Compiling $(WHITE)$^$(DEFAULT)"
+	@$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 clean:
-	$(RM) $(TARGET) $(OBJS)
-
-run: $(TARGET)
-	./$(TARGET)
+	@$(RM) bin/* build/*
