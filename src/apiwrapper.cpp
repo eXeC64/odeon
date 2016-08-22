@@ -1,4 +1,4 @@
-#include "odeon.hpp"
+#include "apiwrapper.hpp"
 
 #include <iostream>
 #include <cpr/cpr.h>
@@ -6,17 +6,17 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 
-void Odeon::AddLocalCinema(const std::string& name)
+void APIWrapper::AddLocalCinema(const std::string& name)
 {
   m_local_cinemas.insert(name);
 }
 
-void Odeon::ClearLocalCinemas()
+void APIWrapper::ClearLocalCinemas()
 {
   m_local_cinemas.clear();
 }
 
-bool Odeon::Fetch()
+bool APIWrapper::Fetch()
 {
   m_cinemas.clear();
   m_films.clear();
@@ -37,7 +37,7 @@ bool Odeon::Fetch()
   return true;
 }
 
-bool Odeon::FetchCinemas()
+bool APIWrapper::FetchCinemas()
 {
   auto r = cpr::Get(cpr::Url{"http://www.odeon.co.uk/api/uk/v2/cinemas.json?lite=1"});
   if(r.status_code != 200)
@@ -63,7 +63,7 @@ bool Odeon::FetchCinemas()
   return true;
 }
 
-bool Odeon::FetchPerformances(int cinema_id)
+bool APIWrapper::FetchPerformances(int cinema_id)
 {
   std::stringstream url_ss;
   url_ss << "http://www.odeon.co.uk/api/uk/v2/performances/cinema/" << cinema_id << ".json";
@@ -117,7 +117,7 @@ bool Odeon::FetchPerformances(int cinema_id)
   return true;
 }
 
-bool Odeon::AddFilm(const Json::Value &film)
+bool APIWrapper::AddFilm(const Json::Value &film)
 {
   const int id = film["masterId"].asInt();
 
@@ -130,7 +130,7 @@ bool Odeon::AddFilm(const Json::Value &film)
   return true;
 }
 
-const Cinema& Odeon::GetCinema(int cinema_id) const
+const Cinema& APIWrapper::GetCinema(int cinema_id) const
 {
   auto it = m_cinemas.find(cinema_id);
   if(it != m_cinemas.end())
@@ -139,7 +139,7 @@ const Cinema& Odeon::GetCinema(int cinema_id) const
   return m_null_cinema;
 }
 
-const Film& Odeon::GetFilm(int film_id) const
+const Film& APIWrapper::GetFilm(int film_id) const
 {
   auto it = m_films.find(film_id);
   if(it != m_films.end())
@@ -148,7 +148,7 @@ const Film& Odeon::GetFilm(int film_id) const
   return m_null_film;
 }
 
-const Performance& Odeon::GetPerformance(const std::string& performance_id) const
+const Performance& APIWrapper::GetPerformance(const std::string& performance_id) const
 {
   auto it = m_performances.find(performance_id);
   if(it != m_performances.end())
@@ -157,7 +157,7 @@ const Performance& Odeon::GetPerformance(const std::string& performance_id) cons
   return m_null_performance;
 }
 
-std::set<int> Odeon::GetCinemas() const
+std::set<int> APIWrapper::GetCinemas() const
 {
   std::set<int> ret;
   for(auto it : m_cinemas)
@@ -165,7 +165,7 @@ std::set<int> Odeon::GetCinemas() const
   return ret;
 }
 
-std::set<int> Odeon::GetFilms() const
+std::set<int> APIWrapper::GetFilms() const
 {
   std::set<int> ret;
   for(auto it : m_films)
@@ -173,7 +173,7 @@ std::set<int> Odeon::GetFilms() const
   return ret;
 }
 
-std::set<std::string> Odeon::GetCinemaPerformances(int cinema_id) const
+std::set<std::string> APIWrapper::GetCinemaPerformances(int cinema_id) const
 {
   auto it = m_performances_by_cinema.find(cinema_id);
   if(it != m_performances_by_cinema.end())
@@ -182,7 +182,7 @@ std::set<std::string> Odeon::GetCinemaPerformances(int cinema_id) const
   return std::set<std::string>();
 }
 
-std::set<std::string> Odeon::GetFilmPerformances(int film_id) const
+std::set<std::string> APIWrapper::GetFilmPerformances(int film_id) const
 {
   auto it = m_performances_by_film.find(film_id);
   if(it != m_performances_by_film.end())
@@ -191,7 +191,7 @@ std::set<std::string> Odeon::GetFilmPerformances(int film_id) const
   return std::set<std::string>();
 }
 
-std::set<int> Odeon::GrepFilms(const std::string& str) const
+std::set<int> APIWrapper::GrepFilms(const std::string& str) const
 {
   std::set<int> ret;
   for(auto it = m_films.begin(); it != m_films.end(); ++it)
@@ -203,7 +203,7 @@ std::set<int> Odeon::GrepFilms(const std::string& str) const
   return ret;
 }
 
-std::set<std::string> Odeon::GetAllPerformances() const
+std::set<std::string> APIWrapper::GetAllPerformances() const
 {
   std::set<std::string> perfs;
   for(auto p : m_performances)

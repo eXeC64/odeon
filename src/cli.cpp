@@ -1,5 +1,4 @@
 #include "cli.hpp"
-#include "odeon.hpp"
 #include "colors.hpp"
 
 #include <iostream>
@@ -8,8 +7,8 @@
 #include <sstream>
 #include <boost/algorithm/string.hpp>
 
-CLI::CLI(Odeon &model)
-  : m_model(model)
+CLI::CLI(APIWrapper &api)
+  : m_api(api)
 {
 }
 
@@ -46,12 +45,12 @@ void CLI::HandleCommand(const std::string& command, const std::vector<std::strin
   }
   else if(command == "list")
   {
-    std::set<int> film_ids = m_model.GetFilms();
+    std::set<int> film_ids = m_api.GetFilms();
     std::map<std::string, Film> films;
 
     for(int id : film_ids)
     {
-      const Film &film = m_model.GetFilm(id);
+      const Film &film = m_api.GetFilm(id);
       films[film.title] = film;
     }
 
@@ -72,13 +71,13 @@ void CLI::HandleCommand(const std::string& command, const std::vector<std::strin
     for(const std::string& s : args)
       title += std::string{" "} + s;
 
-    std::set<int> film_ids = m_model.GrepFilms(title);
+    std::set<int> film_ids = m_api.GrepFilms(title);
     std::map<std::string, Film> films;
 
     std::map<std::string, int> title_to_id;
     for(int id : film_ids)
     {
-      const Film &film = m_model.GetFilm(id);
+      const Film &film = m_api.GetFilm(id);
       films[film.title] = film;
       title_to_id[film.title] = id;
     }
@@ -126,10 +125,10 @@ std::string format_date(int year, int month, int day)
 void CLI::PrintFilmPerformances(int film_id)
 {
 
-  std::set<std::string> performance_ids = m_model.GetFilmPerformances(film_id);
+  std::set<std::string> performance_ids = m_api.GetFilmPerformances(film_id);
   std::vector<Performance> performances;
   for(auto id : performance_ids)
-    performances.push_back(m_model.GetPerformance(id));
+    performances.push_back(m_api.GetPerformance(id));
 
   PrintPerformances(performances);
 }
@@ -141,11 +140,11 @@ void CLI::PrintTodaysPerformances()
   time_t tt = std::chrono::system_clock::to_time_t(now);
   tm time = *localtime(&tt);
 
-  std::set<std::string> performance_ids = m_model.GetAllPerformances();
+  std::set<std::string> performance_ids = m_api.GetAllPerformances();
   std::vector<Performance> performances;
   for(auto id : performance_ids)
   {
-    const Performance& p = m_model.GetPerformance(id);
+    const Performance& p = m_api.GetPerformance(id);
     if(p.year != time.tm_year + 1900 || p.month != time.tm_mon + 1 || p.day != time.tm_mday)
       continue;
     performances.push_back(p);
@@ -174,8 +173,8 @@ void CLI::PrintPerformances(std::vector<Performance> performances, bool show_dat
   std::string last_cinema;
   for(const Performance& p : performances)
   {
-    const Film& film = m_model.GetFilm(p.film);
-    const Cinema& cinema = m_model.GetCinema(p.cinema);
+    const Film& film = m_api.GetFilm(p.film);
+    const Cinema& cinema = m_api.GetCinema(p.cinema);
     const std::string cur_film = film.title;
     const std::string cur_date = format_date(p.year, p.month, p.day);
     const std::string cur_cinema = cinema.name;

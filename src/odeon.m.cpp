@@ -1,25 +1,25 @@
 #include <iostream>
 #include <iomanip>
 
-#include "odeon.hpp"
+#include "apiwrapper.hpp"
 #include "cli.hpp"
 
 int main()
 {
-  Odeon db;
+  APIWrapper api;
 
-  db.AddLocalCinema("Camden");
-  db.AddLocalCinema("Greenwich");
-  db.AddLocalCinema("London Covent Garden");
-  db.AddLocalCinema("London Leicester Square");
-  db.AddLocalCinema("London Panton Street");
-  db.AddLocalCinema("London Tottenham Court Road");
+  api.AddLocalCinema("Camden");
+  api.AddLocalCinema("Greenwich");
+  api.AddLocalCinema("London Covent Garden");
+  api.AddLocalCinema("London Leicester Square");
+  api.AddLocalCinema("London Panton Street");
+  api.AddLocalCinema("London Tottenham Court Road");
 
   std::cout << "Fetching data..." << std::flush;
-  db.Fetch();
+  api.Fetch();
   std::cout << " done." << std::endl;
 
-  CLI ui(db);
+  CLI ui(api);
 
   ui.Run();
 

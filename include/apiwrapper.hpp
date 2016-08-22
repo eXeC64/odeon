@@ -35,7 +35,7 @@ struct Performance
   bool isSubtitled = false;
 };
 
-class Odeon
+class APIWrapper
 {
 public:
   void AddLocalCinema(const std::string& name);

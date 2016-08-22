@@ -4,12 +4,12 @@
 #include <vector>
 
 
-#include "odeon.hpp"
+#include "apiwrapper.hpp"
 
 class CLI
 {
 public:
-  CLI(Odeon &model);
+  CLI(APIWrapper &api);
   void Run();
   void PrintFilmPerformances(int film_id);
   void PrintTodaysPerformances();
@@ -18,5 +18,5 @@ public:
 private:
   void HandleCommand(const std::string& command, const std::vector<std::string> &args);
 
-  Odeon &m_model;
+  APIWrapper &m_api;
 };
