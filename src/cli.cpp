@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <chrono>
 #include <sstream>
 #include <boost/algorithm/string.hpp>
 
@@ -40,6 +39,7 @@ void CLI::HandleCommand(const std::string& command, const std::vector<std::strin
               << "\t       help: Print this help\n"
               << "\t       list: Film List\n"
               << "\t      today: Today's Performances\n"
+              << "\t   tomorrow: Tomorrow's Performances\n"
               << "\tshow <film>: Show performances of film\n"
               << std::flush;
   }
@@ -87,7 +87,11 @@ void CLI::HandleCommand(const std::string& command, const std::vector<std::strin
   }
   else if(command == "today")
   {
-    PrintTodaysPerformances();
+    PrintPerformancesOnDate(std::chrono::system_clock::now());
+  }
+  else if(command == "tomorrow")
+  {
+    PrintPerformancesOnDate(std::chrono::system_clock::now() + std::chrono::hours(24));
   }
   else
   {
@@ -133,11 +137,9 @@ void CLI::PrintFilmPerformances(int film_id)
   PrintPerformances(performances);
 }
 
-void CLI::PrintTodaysPerformances()
+void CLI::PrintPerformancesOnDate(std::chrono::time_point<std::chrono::system_clock> date)
 {
-
-  std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-  time_t tt = std::chrono::system_clock::to_time_t(now);
+  time_t tt = std::chrono::system_clock::to_time_t(date);
   tm time = *localtime(&tt);
 
   std::set<std::string> performance_ids = m_api.GetAllPerformances();

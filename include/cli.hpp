@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -12,7 +13,7 @@ public:
   CLI(APIWrapper &api);
   void Run();
   void PrintFilmPerformances(int film_id);
-  void PrintTodaysPerformances();
+  void PrintPerformancesOnDate(std::chrono::time_point<std::chrono::system_clock> date);
   void PrintPerformances(std::vector<Performance> performances, bool show_dates = true);
 
 private:
